@@ -1,12 +1,12 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import GUI from 'lil-gui';
 
 /**
  * Base
  */
 // Debug
-const gui = new GUI({ width: 340 });
+const gui = new GUI({width: 340});
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl');
@@ -25,8 +25,7 @@ const sizes = {
     height: window.innerHeight
 };
 
-window.addEventListener('resize', () =>
-{
+window.addEventListener('resize', () => {
     // Update sizes
     sizes.width = window.innerWidth;
     sizes.height = window.innerHeight;
@@ -63,19 +62,39 @@ renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 /**
- * Test
+ * Fireworks
  */
-const test = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial()
-);
-scene.add(test);
+const createFirework = (count, position) => {
+    // Geometry
+    const positionsArray = new Float32Array(count * 3);
+
+    for (let i = 0; i < count; i++) {
+        const i3 = i * 3;
+
+        positionsArray[i3] = Math.random() - 0.5;
+        positionsArray[i3 + 1] = Math.random() - 0.5;
+        positionsArray[i3 + 2] = Math.random() - 0.5;
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positionsArray, 3));
+
+    // Material
+    const material = new THREE.PointsMaterial();
+
+    // Points
+    const firework = new THREE.Points(geometry, material);
+    firework.position.copy(position);
+    scene.add(firework);
+
+};
+
+createFirework(100, new THREE.Vector3());
 
 /**
  * Animate
  */
-const tick = () =>
-{
+const tick = () => {
     // Update controls
     controls.update();
 
